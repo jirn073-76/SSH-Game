@@ -1,6 +1,10 @@
 import java.io.IOException;
+
+import org.apache.sshd.server.SshServer;
 //import org.slf4j.
 //import IoServiceFactoryFactory
+import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
+import org.apache.sshd.server.shell.ProcessShellFactory;
 
 public class main {
 	public static void main(String[] args) 
@@ -30,11 +34,20 @@ public class main {
 //			System.out.println(sb.toString());
 //		}	
 		
-		ServerClient sc = new ServerClient(22);
-		try {
-			sc.getSshd().start();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		ServerClient sc = new ServerClient(22);
+//		try {
+//			sc.getSshd().start();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		
+			SshServer sshServer = SshServer.setUpDefaultServer();
+	        sshServer.setHost("127.0.0.1");
+	        sshServer.setPort(2222);
+	        sshServer.setKeyPairProvider(new SimpleGeneratorHostKeyProvider());
+	        sshServer.setPasswordAuthenticator((username, password, session) -> {
+	            return true;
+	        });
+	        sshServer.setShellFactory(new ProcessShellFactory("/bin/sh", "-i", "-l"));
 	}
 }
