@@ -38,7 +38,7 @@ public class ServerClient {
 		//Windows
 		//sshd.setShellFactory(new ProcessShellFactory("powershell.exe"));
 		//"bash -l". config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
-		sshd.setShellFactory(new ProcessShellFactory(new String[] { "bash -c 'BASH_ENV=/etc/profile exec bash"}));
+		sshd.setShellFactory(new ProcessShellFactory(new String[] { "/bin/sh -i -l"}));
 		sshd.setCommandFactory(new ScpCommandFactory());
 	}
 }

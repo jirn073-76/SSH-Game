@@ -1,5 +1,6 @@
 import java.io.IOException;
 
+import org.apache.sshd.common.session.helpers.AbstractSession;
 import org.apache.sshd.server.SshServer;
 //import org.slf4j.
 //import IoServiceFactoryFactory
@@ -53,6 +54,12 @@ public class main {
 			
 			System.out.println(sc.getSshd().getHost());
 			System.out.println(sc.getSshd().getPort());
+			
+			for (AbstractSession session : sc.getSshd().getActiveSessions()) {
+				System.out.println(session.getSessionId());
+				System.out.println(session.getUsername());
+				System.out.println();
+			}
 		}
 	}
 }
