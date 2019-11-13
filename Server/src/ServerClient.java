@@ -1,3 +1,8 @@
+import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.file.*;
+
 import org.apache.sshd.server.*;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.scp.ScpCommandFactory;
@@ -17,10 +22,23 @@ public class ServerClient {
 	
 	public ServerClient(int port) {
 		setSshd(SshServer.setUpDefaultServer());
-        sshd.setHost("127.0.0.1");
+		
+        try { sshd.setHost(InetAddress.getLocalHost().getHostAddress()); } 
+        catch (UnknownHostException e) { e.printStackTrace(); }
+        
 		sshd.setPort(port);
-		sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider());
-		//sshd.setShellFactory(new ProcessShellFactory(new String[] { "/bin/sh", "-i", "-l" }));
+		sshd.setPasswordAuthenticator(new TronPasswordAuthenticator());
+		
+		SimpleGeneratorHostKeyProvider hkprovider = new SimpleGeneratorHostKeyProvider();
+		Path hkfile = Paths.get("hostkey.ser");
+		hkprovider.setPath(hkfile);
+		
+		sshd.setKeyPairProvider(hkprovider);
+				
+		//Windows
+		//sshd.setShellFactory(new ProcessShellFactory("powershell.exe"));
+		//"bash -l". config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+		sshd.setShellFactory(new ProcessShellFactory(new String[] { "bash -c 'BASH_ENV=/etc/profile exec bash"}));
 		sshd.setCommandFactory(new ScpCommandFactory());
 	}
 }

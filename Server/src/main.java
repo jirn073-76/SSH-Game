@@ -33,21 +33,26 @@ public class main {
 //			}
 //			System.out.println(sb.toString());
 //		}	
+	
+		ServerClient sc = new ServerClient(2222);
+		try {
+			sc.getSshd().open();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
+		System.out.println(sc.getSshd().getActiveSessions());
 		
-//		ServerClient sc = new ServerClient(22);
-//		try {
-//			sc.getSshd().start();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-		
-			SshServer sshServer = SshServer.setUpDefaultServer();
-	        sshServer.setHost("127.0.0.1");
-	        sshServer.setPort(2222);
-	        sshServer.setKeyPairProvider(new SimpleGeneratorHostKeyProvider());
-	        sshServer.setPasswordAuthenticator((username, password, session) -> {
-	            return true;
-	        });
-	        sshServer.setShellFactory(new ProcessShellFactory("/bin/sh", "-i", "-l"));
+		while (true) {
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			System.out.println(sc.getSshd().getHost());
+			System.out.println(sc.getSshd().getPort());
+		}
 	}
 }
