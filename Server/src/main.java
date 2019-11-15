@@ -47,19 +47,24 @@ public class main {
 		
 		while (true) {
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			
-			System.out.println(sc.getSshd().getHost());
-			System.out.println(sc.getSshd().getPort());
+//			char[][] map = new char[][]
+//			{
+//				{'#','#','#','#','#','#','#','#'},
+//				{'#','#','#','#','#','#','#','#'},
+//				{'#','#','#','#','#','#','#','#'},
+//				{'#','#','#','#','#','#','#','#'},
+//			};
+//			
+//			sc.write2DArrayToScreen(map);
+			//System.out.println(sc.getSshd().getHost());
+			//System.out.println(sc.getSshd().getPort());
 			
-			for (AbstractSession session : sc.getSshd().getActiveSessions()) {
-				System.out.println(session.getSessionId());
-				System.out.println(session.getUsername());
-				System.out.println();
-			}
+			
 		}
 	}
 }

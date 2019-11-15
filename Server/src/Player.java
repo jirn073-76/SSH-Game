@@ -2,6 +2,7 @@ import java.util.LinkedList;
 
 public class Player {
 	
+	public String color;
 	
 	private Coordinate pos;
 	
@@ -9,6 +10,17 @@ public class Player {
 
 	Direction startMovementDirection;
 	Direction movementDirection;
+	
+	public Player(int x, int y, Direction direction, String color) {
+		
+		pos= new Coordinate(x,y);
+		
+		trail = new LinkedList<Coordinate>();
+
+		startMovementDirection = movementDirection = direction;
+		
+		this.color = color; 
+	}
 	
 	public Player(int x, int y, Direction direction) {
 		
