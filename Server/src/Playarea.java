@@ -18,7 +18,7 @@ public class Playarea {
 	
 	private Tile[][] playField;
 	
-	LinkedList<Player> players;
+	private LinkedList<Player> players;
 	
 	public Playarea(int width, int height) {
 		this.width = width;
@@ -53,7 +53,7 @@ public class Playarea {
 					sb.append( playField[x][y].getString());
 				}
 			}
-			sb.append("#\n\r");
+			sb.append("\u001B[0m#\n\r");
 		}
 		for(int y = 0; y < width+2; y++) {
 			sb.append('#');
@@ -62,27 +62,98 @@ public class Playarea {
 	}
 	
 	private void update() {
+		int i = 0;
+		int j;
 		for(Player p:players) {
 			getTileAt(p.getPos()).isHead = false;
 			getTileAt(p.getPos()).direction=p.movementDirection;
 			p.move();
-			try{
-				if(getTileAt(p.getPos()) != null)
-					throw new Exception();
-			} catch (Exception e) {
-				killPlayer(p);
-			}
+			Player toKill=null;
+			if(!insideBounds(p.getPos()) )
+				toKill=p;
+			else
+			if( getTileAt(p.getPos()) != null) {
+				toKill=p;
+				if(getTileAt(p.getPos()).isHead) {
+					j = 0;
+					for(Player otherP : players) {
+						if(j>=i)
+							break;
+						if(otherP.getPos()== p.getPos()) {
+							if(rnd.nextBoolean()) {
+								toKill=otherP;
+								break;		
+							}
+						}
+						j++;
+					}
+				}
+			} 
+			if(toKill!=null)
+				killPlayer(toKill);
 			playField[p.getPos().x][p.getPos().y] = new Tile(p.movementDirection,false,p);
+			i++;
 		}
 	}
 	
-	
-	
+	private boolean insideBounds(Coordinate pos) {
+		return pos.x < width && pos.x>=0&& pos.y >= 0 && pos.y <height;
+	}
+
 	private void killPlayer(Player p) {
 		for (Coordinate pos : p.trail) {
 			resetTile(pos);
 		}
-		p.reset();
+		while(true) 
+		{
+			int x = rnd.nextInt(width-10)+5;
+			int y = rnd.nextInt(height-10)+5;
+			if(playField[x][y] == null) {
+				for (Direction direction : Direction.values()) {
+					boolean empty = true;
+					switch (direction) {
+					case up:
+							for (int i = 1; i < 6; i++) {
+								if(playField[x][y+i]!=null) {
+									empty = false;
+									break;
+								}
+							}
+						break;
+					case left:
+						for (int i = 1; i < 6; i++) {
+							if(playField[x-i][y]!=null) {
+								empty = false;
+								break;
+							}
+						}
+						break;
+					case down:
+						for (int i = 1; i < 6; i++) {
+							if(playField[x][y-i]!=null) {
+								empty = false;
+								break;
+							}
+						}
+						break;
+					case right:
+							for (int i = 1; i < 6; i++) {
+								if(playField[x+i][y]!=null) {
+									empty = false;
+									break;
+								}
+							}
+							break;
+					}
+					if(!empty)
+						continue;
+					
+					p.startMovementDirection=direction;
+					p.reset(new Coordinate(x,y));
+					return;
+				}
+			}
+		}
 	}
 	
 	public IPlayer newPlayer(OutputStream out, Color color) {
@@ -141,6 +212,14 @@ public class Playarea {
 								resetTile(pos);
 							}
 							resetTile(p.getPos());
+							if(getPlayerCount()<=0) {
+								timer.cancel();
+								try {
+									this.finalize();
+								} catch (Throwable e) {
+									e.printStackTrace();
+								}
+							}
 						}
 					});
 				}
@@ -161,7 +240,6 @@ public class Playarea {
 	public int getPlayerCount() {
 		return players.size();
 	}
-	
 	public void start() {
 		if(timer != null)
 			return;
@@ -181,6 +259,6 @@ public class Playarea {
 					}
 				}
 			}
-		}, 0,500);
+		}, 0,250);
 	}
 }

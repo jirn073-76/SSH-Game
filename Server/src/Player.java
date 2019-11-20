@@ -65,6 +65,11 @@ public class Player {
 		trail = new LinkedList<Coordinate>();
 		movementDirection = startMovementDirection;
 	}
+	public void reset(Coordinate pos) {
+		this.pos = pos;
+		trail = new LinkedList<Coordinate>();
+		movementDirection = startMovementDirection;
+	}
 	
 private void changeDirection(Direction d) {
 	if(d == Direction.down && movementDirection == Direction.up)
