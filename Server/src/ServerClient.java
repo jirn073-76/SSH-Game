@@ -44,7 +44,7 @@ public class ServerClient extends StandardEnvironment{
 	public void setSshd(SshServer sshd) {
 		this.sshd = sshd;
 	}
-	
+	FieldManager fieldManager = new FieldManager();
 	public ServerClient(int port) {
 		setSshd(SshServer.setUpDefaultServer());
 		
@@ -56,13 +56,7 @@ public class ServerClient extends StandardEnvironment{
         
 		sshd.setPort(port);
 		sshd.setPasswordAuthenticator(new TronPasswordAuthenticator());
-		sshd.setCommandFactory(new CommandFactory() {
-			@Override
-			public Command createCommand(String arg0) {
-				System.out.println(arg0);
-				return new TronCommand();
-			}
-		});
+		sshd.setCommandFactory(new TronCommandFactory(fieldManager));
 		SimpleGeneratorHostKeyProvider hkprovider = new SimpleGeneratorHostKeyProvider();
 		Path hkfile = Paths.get("hostkey.ser");
 		hkprovider.setPath(hkfile);

@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;
@@ -13,9 +12,10 @@ public class TronCommand implements Command {
 	InputStream in;
 	ExitCallback exc;
 	Thread t;
+	IPlayer player;
 	
 	public TronCommand(IPlayer player) {
-		
+		this.player = player;
 	}
 	
 	
