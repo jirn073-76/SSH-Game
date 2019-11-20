@@ -23,9 +23,10 @@ public class TronCommand implements Command {
 	public void start(Environment arg0) throws IOException {
 		Color col = null;
 		for (Color c : Color.values()) {
-			if(c.name().equals(arg0.getEnv().values().toArray()[2]))
+			if(c.toString().equals(arg0.getEnv().values().toArray()[2]))
 				col = c;
 		}
+		System.out.println(col);
 		if(col == null) {
 			exc.notifyAll();
 			return;

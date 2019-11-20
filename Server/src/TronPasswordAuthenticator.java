@@ -12,7 +12,7 @@ public class TronPasswordAuthenticator implements PasswordAuthenticator {
 	
 	public TronPasswordAuthenticator() {
 		super();
-		for (String uname : new String[] { "red", "blue", "green", "pink"}) {
+		for (String uname : new String[] { "red", "green", "orange", "blue", "pink", "lightblue", "white"}) {
 			allowedUsers.add(uname);
 		}
 	}

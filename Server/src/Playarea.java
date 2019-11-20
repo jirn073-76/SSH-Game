@@ -130,7 +130,7 @@ public class Playarea {
 					if(!empty)
 						continue;
 					
-					Player p = new Player(x,y,direction,color.red, out);
+					Player p = new Player(x,y,direction,color, out);
 					players.add(p);	
 					playField[x][y] = new Tile(p.movementDirection, false, p); 
 					return p.getFunctions(new IDestroy() {

@@ -35,7 +35,7 @@ public class main {
 //			System.out.println(sb.toString());
 //		}	
 	
-		ServerClient sc = new ServerClient(2222);
+		ServerClient sc = new ServerClient(12222);
 		try {
 			sc.getSshd().open();
 		} catch (IOException e) {

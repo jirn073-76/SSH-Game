@@ -25,7 +25,7 @@ public class Player {
 	
 	public IPlayer getFunctions(IDestroy dest) {
 		return new IPlayer() {
-			
+
 			@Override
 			public void changeDirection(Direction d) {
 				Player.this.changeDirection(d);
