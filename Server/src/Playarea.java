@@ -1,11 +1,17 @@
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Playarea {
 	private static Random rnd = new Random();
 	private static char playerSymbol = '+';
 	private static char trailSymbol = '#';
 	private int width, height;
+	private Timer timer;
+	
 	enum fieldState {
 		Empty, Player, Tail
 	}
@@ -17,35 +23,45 @@ public class Playarea {
 	public Playarea(int width, int height) {
 		this.width = width;
 		this.height = height;
-		playField = new Tile[height][width];
+		playField = new Tile[width][height];
 		players = new LinkedList<Player>();
 		
 	}
 	
 	
 	
-	public byte[] getPlayareaAsCharArray(){
+	public byte[] getPlayareaAsByteArray(){
 		
-		byte[] result = new byte[height*width*2];
-	
+		StringBuilder sb= new StringBuilder();
+
+		for(int i = 0; i < height; i ++)
+			sb.append("\n\r");
+		for(int y = 0; y < width+2; y++) {
+			sb.append('#');
+		}
+		sb.append("\n\r");
 		for(int y = 0; y < height; y++) {
+			sb.append('#');
 			for(int x = 0; x < width; x++) {
 				if(playField[x][y]==null)
 				{
-					result[x*width+y]=' ';
+					sb.append("\u001B[0m ");
 					continue;
 				}
 				else
 				{
-					result[x*width+y] = (byte) playField[x][y].getChar();
+					sb.append( playField[x][y].getString());
 				}
 			}
+			sb.append("#\n\r");
 		}
-		
-		return result;
+		for(int y = 0; y < width+2; y++) {
+			sb.append('#');
+		}
+		return sb.toString().getBytes();
 	}
 	
-	public void update() {
+	private void update() {
 		for(Player p:players) {
 			getTileAt(p.getPos()).isHead = false;
 			getTileAt(p.getPos()).direction=p.movementDirection;
@@ -69,7 +85,7 @@ public class Playarea {
 		p.reset();
 	}
 	
-	public IPlayer newPlayer() {
+	public IPlayer newPlayer(OutputStream out, Color color) {
 		while(true) 
 		{
 			int x = rnd.nextInt(width-10)+5;
@@ -114,10 +130,19 @@ public class Playarea {
 					if(!empty)
 						continue;
 					
-					Player p = new Player(x,y,direction);
+					Player p = new Player(x,y,direction,color.red, out);
 					players.add(p);	
 					playField[x][y] = new Tile(p.movementDirection, false, p); 
-					return p.getFunctions();
+					return p.getFunctions(new IDestroy() {
+						@Override
+						public void destroy() {
+							players.remove(p);
+							for (Coordinate pos : p.trail) {
+								resetTile(pos);
+							}
+							resetTile(p.getPos());
+						}
+					});
 				}
 			}
 		}
@@ -135,5 +160,27 @@ public class Playarea {
 
 	public int getPlayerCount() {
 		return players.size();
+	}
+	
+	public void start() {
+		if(timer != null)
+			return;
+		timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				update();
+				byte[] arr = getPlayareaAsByteArray();
+				for(Player p: players) {
+					OutputStream out = p.getOutStream();
+					try {
+						out.write(arr);
+						out.flush();
+					} catch(IOException e) {
+						
+					}
+				}
+			}
+		}, 0,500);
 	}
 }

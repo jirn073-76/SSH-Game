@@ -9,9 +9,10 @@ public class TronPasswordAuthenticator implements PasswordAuthenticator {
 	
 	private ArrayList<String> allowedUsers = new ArrayList<String>();
 	
+	
 	public TronPasswordAuthenticator() {
-		// 31iendlddao ist der Server, bitte nicht hinterfragen
-		for (String uname : new String[] { "red", "blue", "green", "31iendlddao"}) {
+		super();
+		for (String uname : new String[] { "red", "blue", "green", "pink"}) {
 			allowedUsers.add(uname);
 		}
 	}
