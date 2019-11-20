@@ -47,7 +47,7 @@ public class main {
 		
 		while (true) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(10000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -61,8 +61,8 @@ public class main {
 //			};
 //			
 //			sc.write2DArrayToScreen(map);
-			//System.out.println(sc.getSshd().getHost());
-			//System.out.println(sc.getSshd().getPort());
+			System.out.println(sc.getSshd().getHost());
+			System.out.println(sc.getSshd().getPort());
 			
 			
 		}
