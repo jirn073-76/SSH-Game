@@ -30,6 +30,7 @@ import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.scp.ScpCommandFactory;
 import org.apache.sshd.server.session.ServerSession;
 import org.apache.sshd.server.shell.ProcessShellFactory;
+import org.springframework.orm.toplink.SessionFactory;
 
 import io.netty.channel.ServerChannel;
 
@@ -61,7 +62,7 @@ public class ServerClient extends StandardEnvironment{
 			@Override
 			public Command createCommand(String arg0) {
 				System.out.println(arg0);
-				return new TestCommand();
+				return new TronCommand();
 			}
 		});
 //		sshd.addChannelListener(new ChannelListener() {
@@ -84,19 +85,20 @@ public class ServerClient extends StandardEnvironment{
 		hkprovider.setPath(hkfile);
 		
 		sshd.setKeyPairProvider(hkprovider);
-				
 		//Windows
 		//sshd.setShellFactory(new ProcessShellFactory("powershell.exe"));
 		//"bash -l". config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
-		//sshd.setShellFactory(new ProcessShellFactory(new String[] { "sudo", "/bin/bash" }));
-		sshd.setShellFactory(new Factory<Command>() {
-			
-			@Override
-			public Command create() {
-				return new TronCommand();
-			}
-		});
-		//sshd.setCommandFactory(new TronProcessShellFactory(this));
+		sshd.setShellFactory( new TronShellFactory(sshd));
+//		sshd.setShellFactory(new ProcessShellFactory(new String[] { "sudo", "/bin/bash" }));
+//		sshd.setShellFactory(new Factory<Command>() {
+//			
+//			@Override
+//			public Command create() {
+//				return sshd.getCommandFactory().createCommand("poop");
+//			}
+//		});
+		
+//		sshd.setCommandFactory(new TronProcessShellFactory(this));
 }	 
 	
 	

@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;
@@ -10,25 +11,41 @@ public class TronCommand implements Command {
 
 	OutputStream out;
 	InputStream in;
+	Thread t;
 	@Override
 	public void start(Environment arg0) throws IOException {
 		// TODO Auto-generated method stub
 		System.out.println("Command start: " + arg0);
-		while(true) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			out.write("test".getBytes());
-		}
+		t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(true) {
+						try {
+							if(in.available()>0) {
+								char r = (char) in.read();
+								out.write(r);
+								out.flush();
+							}
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}	
+					}
+				}
+			});
+		t.start();
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void destroy() throws Exception {
 		// TODO Auto-generated method stub
 		System.out.println("Command destroy");
+		if(t.isAlive())
+			t.stop();
+		in.close();
+		out.close();
 	}
 	
 	@Override
