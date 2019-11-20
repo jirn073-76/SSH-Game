@@ -6,6 +6,7 @@ public class Player {
 	private Color color;
 	private Coordinate pos;
 	private OutputStream out;
+	private boolean positionSet;
 	LinkedList<Coordinate> trail;
 
 	Direction startMovementDirection;
@@ -58,6 +59,7 @@ public class Player {
 				pos.x--;
 				break;
 		}
+		positionSet=false;
 	}
 
 	public void reset() {
@@ -72,15 +74,19 @@ public class Player {
 	}
 	
 private void changeDirection(Direction d) {
-	if(d == Direction.down && movementDirection == Direction.up)
-		return;	
-	if(d == Direction.up && movementDirection == Direction.down)
-		return;	
-	if(d == Direction.left && movementDirection == Direction.right)
-		return;	
-	if(d == Direction.right && movementDirection == Direction.left)
-		return;
-	movementDirection = d;
+	if(!positionSet)
+	{
+		if(d == Direction.down && movementDirection == Direction.up)
+			return;	
+		if(d == Direction.up && movementDirection == Direction.down)
+			return;	
+		if(d == Direction.left && movementDirection == Direction.right)
+			return;	
+		if(d == Direction.right && movementDirection == Direction.left)
+			return;
+		movementDirection = d;
+		positionSet = true;
+	}
 }
 
 	public Color getColor() {
