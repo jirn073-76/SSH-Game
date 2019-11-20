@@ -1,4 +1,3 @@
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -58,28 +57,12 @@ public class ServerClient extends StandardEnvironment{
 		sshd.setPort(port);
 		sshd.setPasswordAuthenticator(new TronPasswordAuthenticator());
 		sshd.setCommandFactory(new CommandFactory() {
-			
 			@Override
 			public Command createCommand(String arg0) {
 				System.out.println(arg0);
 				return new TronCommand();
 			}
 		});
-//		sshd.addChannelListener(new ChannelListener() {
-//			@Override
-//			public void channelOpenSuccess(Channel channel) {
-//				try {
-//					ServerSession  sc = (ServerSession) channel.getSession();
-//					sc.
-//					Buffer b = channel.getSession().createBuffer((byte)1);
-//					b.putBytes("test".getBytes());
-//					channel.writePacket(b);
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//		});
 		SimpleGeneratorHostKeyProvider hkprovider = new SimpleGeneratorHostKeyProvider();
 		Path hkfile = Paths.get("hostkey.ser");
 		hkprovider.setPath(hkfile);
@@ -89,32 +72,5 @@ public class ServerClient extends StandardEnvironment{
 		//sshd.setShellFactory(new ProcessShellFactory("powershell.exe"));
 		//"bash -l". config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 		sshd.setShellFactory( new TronShellFactory(sshd));
-//		sshd.setShellFactory(new ProcessShellFactory(new String[] { "sudo", "/bin/bash" }));
-//		sshd.setShellFactory(new Factory<Command>() {
-//			
-//			@Override
-//			public Command create() {
-//				return sshd.getCommandFactory().createCommand("poop");
-//			}
-//		});
-		
-//		sshd.setCommandFactory(new TronProcessShellFactory(this));
-}	 
-	
-	
-//	public void write2DArrayToScreen(char[][] map) {
-//		var buffer = new ByteArrayBuffer();
-//		
-//		for (char[] row : map) {
-//			buffer.putAndWipeChars(row);
-//			for (AbstractSession session : sshd.getActiveSessions()) {
-//				try {
-//					if (session != null) {
-//					}
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//	}
+	}	 
 }

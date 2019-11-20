@@ -1,11 +1,4 @@
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
-
-import com.sun.org.apache.xpath.internal.functions.Function;
-
-import javafx.util.Callback;
 
 public class Playarea {
 	
@@ -30,20 +23,20 @@ public class Playarea {
 	
 	
 	
-	char[][] getPlayareaAsCharArray(){
+	public byte[] getPlayareaAsCharArray(){
 		
-		char[][]result = new char[width][height];
-		
-		for(int x = 0; x < width; x++) {
-			for(int y = 0; y < height; y++) {
+		byte[] result = new byte[height*width*2];
+	
+		for(int y = 0; y < height; y++) {
+			for(int x = 0; x < width; x++) {
 				if(playField[x][y]==null)
 				{
-					result[x][y]=' ';
+					result[x*width+y]=' ';
 					continue;
 				}
 				else
 				{
-					result[x][y] = playField[x][y].getChar();
+					result[x*width+y] = (byte) playField[x][y].getChar();
 				}
 			}
 		}

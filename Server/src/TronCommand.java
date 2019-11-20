@@ -17,24 +17,38 @@ public class TronCommand implements Command {
 		// TODO Auto-generated method stub
 		System.out.println("Command start: " + arg0);
 		t = new Thread(new Runnable() {
-			
 			@Override
 			public void run() {
-				while(true) {
-						try {
-							if(in.available()>0) {
-								char r = (char) in.read();
-								out.write(r);
-								out.flush();
+				while (true) {
+					try {
+						if(in.available()>0)
+						{
+							int  b =in.read();
+//							if(b=='[') {
+//								if(in.read()=='A')
+//									destroy();
+//							}
+								
+//							out.write('\r');
+//							for(int i = 0; i < 10; ++i)
+//								out.write(' ');
+//							out.write('\r');
+							out.write(b);
+						}
+						out.flush();
+					} catch (IOException e) {
+							try {
+								destroy();
+							} catch (Exception e1) {
 							}
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}	
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
-			});
+			}
+		});
 		t.start();
+		System.out.println();
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -42,10 +56,10 @@ public class TronCommand implements Command {
 	public void destroy() throws Exception {
 		// TODO Auto-generated method stub
 		System.out.println("Command destroy");
-		if(t.isAlive())
-			t.stop();
 		in.close();
 		out.close();
+		if(t.isAlive())
+			t.stop();
 	}
 	
 	@Override

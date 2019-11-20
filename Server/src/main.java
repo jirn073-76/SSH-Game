@@ -44,26 +44,13 @@ public class main {
 
 
 		System.out.println(sc.getSshd().getActiveSessions());
-		
+		System.out.println(sc.getSshd().getHost()+":"+sc.getSshd().getPort());
 		while (true) {
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			
-//			char[][] map = new char[][]
-//			{
-//				{'#','#','#','#','#','#','#','#'},
-//				{'#','#','#','#','#','#','#','#'},
-//				{'#','#','#','#','#','#','#','#'},
-//				{'#','#','#','#','#','#','#','#'},
-//			};
-//			
-//			sc.write2DArrayToScreen(map);
-			System.out.println(sc.getSshd().getHost());
-			System.out.println(sc.getSshd().getPort());
-			
 			
 		}
 	}
