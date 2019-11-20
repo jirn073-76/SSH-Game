@@ -11,7 +11,14 @@ public class TronCommand implements Command {
 
 	OutputStream out;
 	InputStream in;
+	ExitCallback exc;
 	Thread t;
+	
+	public TronCommand(IPlayer player) {
+		
+	}
+	
+	
 	@Override
 	public void start(Environment arg0) throws IOException {
 		// TODO Auto-generated method stub
@@ -24,15 +31,11 @@ public class TronCommand implements Command {
 						if(in.available()>0)
 						{
 							int  b =in.read();
-//							if(b=='[') {
-//								if(in.read()=='A')
-//									destroy();
-//							}
-								
-//							out.write('\r');
-//							for(int i = 0; i < 10; ++i)
-//								out.write(' ');
-//							out.write('\r');
+							
+							if(b==3) {
+								exc.onExit(0);
+							}
+							
 							out.write(b);
 						}
 						out.flush();
@@ -56,8 +59,7 @@ public class TronCommand implements Command {
 	public void destroy() throws Exception {
 		// TODO Auto-generated method stub
 		System.out.println("Command destroy");
-		in.close();
-		out.close();
+
 		if(t.isAlive())
 			t.stop();
 	}
@@ -86,6 +88,7 @@ public class TronCommand implements Command {
 	public void setExitCallback(ExitCallback arg0) {
 		// TODO Auto-generated method stub
 		System.out.println("Command setExitCallback");
+		exc=arg0;
 	}
 	
 	@Override
