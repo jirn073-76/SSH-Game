@@ -38,7 +38,7 @@ public class TronCommand implements Command {
 		System.out.println("Command start: " + arg0);
 		t = new Thread(new Runnable() {
 			@Override
-			public void run() {
+			public void run() {	
 				while (true) {
 					try {
 						if(in.available()>0)
@@ -59,6 +59,7 @@ public class TronCommand implements Command {
 								destroy();
 							} catch (Exception e1) {
 							}
+							return;
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -83,11 +84,6 @@ public class TronCommand implements Command {
 	public void setOutputStream(OutputStream arg0) {
 		System.out.println("Command setOutputstream");
 		out = arg0;
-		try {
-			out.write("Test".getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	@Override
