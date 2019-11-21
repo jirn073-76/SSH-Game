@@ -137,28 +137,29 @@ public class Playarea {
 	}
 
 	private void killPlayer(Player p) {
-		resetTile(p.getPos());
-		for (Coordinate pos : p.trail) {
-			resetTile(pos);
-		}
-		p.isAlive=false;
+		removeFromField(p);
+
 		
 		if(aliveCount()>1)
 			return;
 		
 		try {
 			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-
-		}
-			
+		} catch (InterruptedException e) { }
+		
 		for (Player player : players) {
+			if(player.isAlive)
+				removeFromField(player);
 			spawn(player);
 		}
-		
-		
 	}
-	
+	private void removeFromField(Player p) {
+		p.isAlive=false;
+		resetTile(p.getPos());
+		for (Coordinate pos : p.trail) {
+			resetTile(pos);
+		}
+	}
 	private void spawn(Player p) {
 		while(true) 
 		{
@@ -205,6 +206,8 @@ public class Playarea {
 						continue;
 					
 					p.setPosition(x, y, direction);
+					playField[x][y] = new Tile(p.movementDirection,true,p);
+					p.isAlive = true;
 					return;
 				}
 			}
@@ -215,15 +218,18 @@ public class Playarea {
 
 		Player p = new Player(color, out);
 		players.add(p);	
-		
+		spawn(p);
 		return p.getFunctions(new IDestroy() {
 			@Override
 			public void destroy() {
 				players.remove(p);
-				for (Coordinate pos : p.trail) {
-					resetTile(pos);
+				removeFromField(p);
+				if(getPlayerCount()<2) {
+					for (Player player : players) {
+							killPlayer(player);
+					}
 				}
-				resetTile(p.getPos());
+					
 //							if(getPlayerCount()<=0) {
 //								timer.cancel();
 //								try {
@@ -240,7 +246,8 @@ public class Playarea {
 		return playField[pos.x][pos.y];
 	}
 	private void resetTile(Coordinate pos) {
-		resetTile(pos.x,pos.y);
+		if(insideBounds(pos))
+			resetTile(pos.x,pos.y);
 	}
 	private void resetTile(int x, int y) {
 		playField[x][y] = null;
@@ -259,6 +266,7 @@ public class Playarea {
 		}
 		return counter;
 	}
+	
 	public void start() {
 		if(timer != null)
 			return;
@@ -266,20 +274,25 @@ public class Playarea {
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				if(getPlayerCount()==0)
+				if(getPlayerCount()<=1) {
+					sendToAllPlayers("Waiting for Players   \r".getBytes());
 					return;
+				}
 				update();
 				byte[] arr = getPlayareaAsByteArray();
-				for(Player p: players) {
-					OutputStream out = p.getOutStream();
-					try {
-						out.write(arr);
-						out.flush();
-					} catch(IOException e) {
-						
-					}
-				}
+
+				sendToAllPlayers(arr);
 			}
 		}, 0,250);
+	}
+	
+	private void sendToAllPlayers(byte[] msg) {
+		for(Player p: players) {
+			OutputStream out = p.getOutStream();
+			try {
+				out.write(msg);
+				out.flush();
+			} catch(IOException e) { }
+		}
 	}
 }

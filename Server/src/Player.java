@@ -16,6 +16,7 @@ public class Player {
 	public Player(Color color, OutputStream out) {
 		this.color = color; 
 		this.out = out;
+		trail = new LinkedList<Coordinate>();
 	}
 	public void setPosition(int x, int y, Direction direction) {
 		pos= new Coordinate(x,y);
