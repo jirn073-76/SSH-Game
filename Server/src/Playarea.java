@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.Timer;
@@ -28,8 +29,6 @@ public class Playarea {
 		
 	}
 	
-	
-	
 	public byte[] getPlayareaAsByteArray(){
 		
 		StringBuilder sb= new StringBuilder();
@@ -56,8 +55,43 @@ public class Playarea {
 			sb.append("\u001B[0m#\n\r");
 		}
 		for(int y = 0; y < width+2; y++) {
-			sb.append('#');
+			sb.append("#");
 		}
+		int playerCount = getPlayerCount();
+		int amount = 8;
+		if(playerCount==0)
+			return sb.toString().getBytes();
+		int breite = (width+1) / (amount)-1;
+		int extra = (width +1)% amount;
+		sb.append("\n\r\u001B[0m\u001B[5m#\u001B[0m");
+		Iterator<Player> iterator = players.iterator();	
+		for (int i = 0; i < amount; i++) {
+			if(i >= playerCount) {
+				for(int j = 0; j<breite;j++)
+					sb.append(" ");
+				sb.append("\u001B[0m\u001B[5m#\u001B[0m");
+				continue;
+			}
+			Player p = iterator.next();
+			if(i == playerCount/2)
+				breite += extra;
+			int taillength = p.trail.size();
+			int elementWidth = breite - String.valueOf(taillength).length();
+			sb.append("\u001B["+(100+p.getColor().ordinal())+"m");
+			for(int j = 0; j<elementWidth/2;j++)
+				sb.append(" ");
+			sb.append(taillength);
+			for(int j = 0; j<elementWidth/2+elementWidth%2;j++)
+				sb.append(" ");
+			sb.append("\u001B[0m\u001B[5m#\u001B[0m");
+			if(i == playerCount/2)
+				breite -= extra;
+		}
+		sb.append("\n\r");
+		for(int y = 0; y < width+2; y++) {
+			sb.append("#");
+		}
+		
 		return sb.toString().getBytes();
 	}
 	
@@ -212,14 +246,14 @@ public class Playarea {
 								resetTile(pos);
 							}
 							resetTile(p.getPos());
-							if(getPlayerCount()<=0) {
-								timer.cancel();
-								try {
-									this.finalize();
-								} catch (Throwable e) {
-									e.printStackTrace();
-								}
-							}
+//							if(getPlayerCount()<=0) {
+//								timer.cancel();
+//								try {
+//									this.finalize();
+//								} catch (Throwable e) {
+//									e.printStackTrace();
+//								}
+//							}
 						}
 					});
 				}
@@ -247,6 +281,8 @@ public class Playarea {
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
+				if(getPlayerCount()==0)
+					return;
 				update();
 				byte[] arr = getPlayareaAsByteArray();
 				for(Player p: players) {
