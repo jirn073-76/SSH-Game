@@ -7,23 +7,21 @@ public class Player {
 	private Coordinate pos;
 	private OutputStream out;
 	private boolean positionSet;
+	public boolean isAlive = false;
 	LinkedList<Coordinate> trail;
 
 	Direction startMovementDirection;
 	Direction movementDirection;
 	
-	public Player(int x, int y, Direction direction, Color color, OutputStream out) {
-
-		pos= new Coordinate(x,y);
-		
-		trail = new LinkedList<Coordinate>();
-
-		startMovementDirection = movementDirection = direction;
-		
+	public Player(Color color, OutputStream out) {
 		this.color = color; 
 		this.out = out;
 	}
-	
+	public void setPosition(int x, int y, Direction direction) {
+		pos= new Coordinate(x,y);
+		trail = new LinkedList<Coordinate>();
+		startMovementDirection = movementDirection = direction;
+	}
 	public IPlayer getFunctions(IDestroy dest) {
 		return new IPlayer() {
 
@@ -62,11 +60,6 @@ public class Player {
 		positionSet=false;
 	}
 
-	public void reset() {
-		pos = trail.get(0);
-		trail = new LinkedList<Coordinate>();
-		movementDirection = startMovementDirection;
-	}
 	public void reset(Coordinate pos) {
 		this.pos = pos;
 		trail = new LinkedList<Coordinate>();
