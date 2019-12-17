@@ -22,8 +22,8 @@ public class TronCommand implements Command {
 	@Override
 	public void start(Environment arg0) throws IOException {
 		
-		Color col = null;
-		for (Color c : Color.values()) {
+		EColor col = null;
+		for (EColor c : EColor.values()) {
 			if(c.toString().equals(arg0.getEnv().values().toArray()[2]))
 				col = c;
 		}

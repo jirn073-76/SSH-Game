@@ -8,7 +8,7 @@ public class FieldManager {
 	
 	LinkedList<Playarea> playareas = new LinkedList<Playarea>();
 	
-	public IPlayer createPlayer(OutputStream out, Color color) {
+	public IPlayer createPlayer(OutputStream out, EColor color) {
 		for(Playarea area: playareas) {
 			if(area.getPlayerCount()<MAX_PLAYER_COUNT) {
 				return area.newPlayer(out, color);

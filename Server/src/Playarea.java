@@ -190,7 +190,7 @@ public class Playarea {
 		}
 	}
 	
-	public IPlayer newPlayer(OutputStream out, Color color) {
+	public IPlayer newPlayer(OutputStream out, EColor color) {
 		while(true) 
 		{
 			int x = rnd.nextInt(width-10)+5;
