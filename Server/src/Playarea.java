@@ -214,7 +214,7 @@ public class Playarea {
 		}
 	}
 	
-	public IPlayer newPlayer(OutputStream out, Color color) {
+	public IPlayer newPlayer(OutputStream out, EColor color) {
 
 		Player p = new Player(color, out);
 		players.add(p);	
@@ -228,8 +228,6 @@ public class Playarea {
 					for (Player player : players) {
 							killPlayer(player);
 					}
-				}
-					
 //							if(getPlayerCount()<=0) {
 //								timer.cancel();
 //								try {
@@ -238,6 +236,7 @@ public class Playarea {
 //									e.printStackTrace();
 //								}
 //							}
+				}
 			}
 		});
 	}

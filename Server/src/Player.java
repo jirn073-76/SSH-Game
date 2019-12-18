@@ -3,7 +3,7 @@ import java.util.LinkedList;
 
 public class Player {
 	
-	private Color color;
+	private EColor color;
 	private Coordinate pos;
 	private OutputStream out;
 	private boolean positionSet;
@@ -13,7 +13,8 @@ public class Player {
 	Direction startMovementDirection;
 	Direction movementDirection;
 	
-	public Player(Color color, OutputStream out) {
+	public Player(EColor color, OutputStream out) {
+
 		this.color = color; 
 		this.out = out;
 		trail = new LinkedList<Coordinate>();
@@ -83,7 +84,7 @@ private void changeDirection(Direction d) {
 	}
 }
 
-	public Color getColor() {
+	public EColor getColor() {
 		return color;
 	}
 

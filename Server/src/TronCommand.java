@@ -22,8 +22,8 @@ public class TronCommand implements Command {
 	@Override
 	public void start(Environment arg0) throws IOException {
 		
-		Color col = null;
-		for (Color c : Color.values()) {
+		EColor col = null;
+		for (EColor c : EColor.values()) {
 			if(c.toString().equals(arg0.getEnv().values().toArray()[2]))
 				col = c;
 		}
@@ -32,7 +32,18 @@ public class TronCommand implements Command {
 			exc.notifyAll();
 			return;
 		}
+		
+		Menu menu = new Menu(FieldManager.getInstance().PLAYAREA_HEIGHT, FieldManager.getInstance().PLAYAREA_WIDTH);
+		out.write(menu.getMenuAsByteArray());
+		out.flush();
+		menu.moveCursor(Direction.down);
+		out.write(menu.getMenuAsByteArray());
+		out.flush();
+		boolean alwaysTrue = true;
+		while(alwaysTrue) 
+		{
 			
+		}
 		player = fm.createPlayer(out,col);
 		// TODO Auto-generated method stub
 		System.out.println("Command start: " + arg0);
