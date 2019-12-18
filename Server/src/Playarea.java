@@ -91,14 +91,15 @@ public class Playarea {
 		for(int y = 0; y < width+2; y++) {
 			sb.append("#");
 		}
-		
+		sb.append("\n\r");
 		return sb.toString().getBytes();
 	}
 	
 	private void update() {
 		int i = 0;
 		int j;
-		for(Player p:players) {
+		for(int k = 0; k<getPlayerCount();k++) {
+			Player p = players.get(k);
 			if(!p.isAlive)
 				continue;
 			getTileAt(p.getPos()).isHead = false;
@@ -127,7 +128,8 @@ public class Playarea {
 			} 
 			if(toKill!=null)
 				killPlayer(toKill);
-			playField[p.getPos().x][p.getPos().y] = new Tile(p.movementDirection,false,p);
+			else
+				playField[p.getPos().x][p.getPos().y] = new Tile(p.movementDirection,false,p);
 			i++;
 		}
 	}
@@ -274,7 +276,7 @@ public class Playarea {
 			@Override
 			public void run() {
 				if(getPlayerCount()<=1) {
-					sendToAllPlayers("Waiting for Players   \r".getBytes());
+					sendToAllPlayers("\rWaiting for Players".getBytes());
 					return;
 				}
 				update();

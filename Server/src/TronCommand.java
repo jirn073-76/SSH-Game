@@ -33,7 +33,7 @@ public class TronCommand implements Command {
 			return;
 		}
 		
-		Menu menu = new Menu(FieldManager.getInstance().PLAYAREA_HEIGHT, FieldManager.getInstance().PLAYAREA_WIDTH);
+		/*Menu menu = new Menu(FieldManager.getInstance().PLAYAREA_HEIGHT, FieldManager.getInstance().PLAYAREA_WIDTH);
 		out.write(menu.getMenuAsByteArray());
 		out.flush();
 		menu.moveCursor(Direction.down);
@@ -43,7 +43,7 @@ public class TronCommand implements Command {
 		while(alwaysTrue) 
 		{
 			
-		}
+		}*/
 		player = fm.createPlayer(out,col);
 		// TODO Auto-generated method stub
 		System.out.println("Command start: " + arg0);
