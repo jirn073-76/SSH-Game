@@ -44,35 +44,23 @@ public class TronCommand implements Command {
 			@Override
 			public void run() {	
 				try {
-				
+					for(int i = 1; i < 100;i++)
+					{
+						out.write((i+": "+"\u001B["+i+"m"+"####\u001B[0m\n\r").getBytes());
+					}
+					out.flush();
 					// Menu I/O Starts here
 					Menu menu = new Menu(FieldManager.PLAYAREA_HEIGHT,FieldManager.PLAYAREA_WIDTH);
-					
-					Thread menuOutputThread = new Thread(new Runnable() {
-
-						@Override
-						public void run() {
-							boolean isThreadTerminated = false;
-							try {
-								while(!isThreadTerminated) {
-									Thread.sleep(20);
-									for(int i = 0; i < 100; i++) {
-										out.write('\n');
-										out.write('\r');
-									}
-									out.write(menu.getMenuAsByteArray());
-									out.flush();
-								}
-							} catch (IOException | InterruptedException e) {
-								isThreadTerminated = true;
-							}
-						}
-					});
-					
-					menuOutputThread.start();
-					
+					for(int i = 0; i < 10; i++) {
+						out.write('\n');
+						out.write('\r');
+					}
+					out.write(menu.getMenuAsByteArray());
+					out.flush();
 					int  by = in.read();
 					while(!(menu.isCursorOnPlay() && by == 13)) {
+						
+						
 						if(by!=27) {
 							switch(by) {
 								case 3:exc.onExit(0);break;
@@ -93,10 +81,14 @@ public class TronCommand implements Command {
 							}
 							}
 						}
-						
+						for(int i = 0; i < 10; i++) {
+							out.write('\n');
+							out.write('\r');
+						}
+						out.write(menu.getMenuAsByteArray());
+						out.flush();
 						by = in.read();
 					}
-					menuOutputThread.interrupt();
 					var ms = menu.getColorAndGamemode();
 					player = FieldManager.createPlayer(out, ms.color);
 				}
