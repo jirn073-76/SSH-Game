@@ -52,17 +52,41 @@ public class TronCommand implements Command {
 			public void run() {	
 				while (true) {
 					try {
+
+						
 						if(in.available()>0)
 						{
-							int  b =in.read();
+//							byte[] b = in.readNBytes(in.available());
+//							out.write(b);
+//							for (byte c : b) {
+//								System.out.print(String.valueOf(c)+" ");
+//							}
+//							System.out.println();
+//							out.flush();
+//							continue;
 							
-							switch(b) {
-								case 3:exc.onExit(0);break;
-								case 'w':player.changeDirection(Direction.up);break;
-								case 'a':player.changeDirection(Direction.left);break;
-								case 's':player.changeDirection(Direction.down);break;
-								case 'd':player.changeDirection(Direction.right);break;
+							int  b =in.read();
+							if(b!=27) {
+								switch(b) {
+									case 3:exc.onExit(0);break;
+									case 'w':player.changeDirection(Direction.up);break;
+									case 'a':player.changeDirection(Direction.left);break;
+									case 's':player.changeDirection(Direction.down);break;
+									case 'd':player.changeDirection(Direction.right);break;
+								}
+							}else {
+								b = in.read();
+								if(b==91){
+									b=in.read();
+									switch(b) {
+									case 65:player.changeDirection(Direction.up);break;
+									case 66:player.changeDirection(Direction.down);break;
+									case 67:player.changeDirection(Direction.right);break;
+									case 68:player.changeDirection(Direction.left);break;
+								}
+								}
 							}
+							
 						}
 						out.flush();
 					} catch (IOException e) {
