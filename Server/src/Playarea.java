@@ -309,7 +309,8 @@ public class Playarea {
 	}
 	
 	private void sendToAllPlayers(byte[] msg) {
-		for(Player p: players) {
+		for (int i = 0; i < players.size(); i++) {
+			Player p = players.get(i);
 			OutputStream out = p.getOutStream();
 			try {
 				out.write(msg);
