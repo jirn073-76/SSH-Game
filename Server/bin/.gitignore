@@ -22,4 +22,12 @@
 /TronPasswordAuthenticator.class
 /TronShellFactory.class
 /main.class
-/TronCommand$1$1.class
+/Util.class
+/DrawUtil.class
+/PlayerList.class
+/PlayerNode.class
+/PlayerList$1.class
+/AbstactPlayarea$1.class
+/AbstactPlayarea$2.class
+/AbstactPlayarea$fieldState.class
+/AbstactPlayarea.class

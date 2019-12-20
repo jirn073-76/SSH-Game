@@ -103,33 +103,40 @@ public class Playarea {
 
 			// bewege den spieler
 			movePlayer(player);
-
-			// fall der spieler rausgefahren ist
-			if (!insideBounds(player))
-				// wird er sterbens
-				toKill = player;
-			// sonnst falls er auf ein nicht leeres Tile gefahren ist
-			else if (!tileIsEmpty(player)) {
-				// wird er sterben
-				toKill = player;
-				// falls das tile ein head tile war
-				if (getTileAt(player).isHead) {
-					Player otherPlayer = getTileAt(player).getPlayer();
-					// und falls der besitzer dieses Heads vor ihm gefahren ist, stirbt  ein random spieler von den beiden.
-					if(players.indexOf(otherPlayer)<players.indexOf(player) && rnd.nextBoolean())
-						toKill = otherPlayer;
-				}
-			}
+			// schaue nach wer sterben soll
+			toKill = checkIfSomeoneHasToDie(player);
+			
 			// falls jemand stirbt 
 			if (toKill != null)
 				// töte ihn
 				killPlayer(toKill);
-			else
+			if(toKill != player)
 				// ansonnsten setzte ein neues tile an der pisition des heads des spielers, welcher gerade gemoved ist
 				playField[player.getPos().x][player.getPos().y] = new Tile(player.movementDirection, true, player);
 		}
 	}
-
+	
+	private Player checkIfSomeoneHasToDie(Player player) {
+		Player toKill=null;
+		// fall der spieler rausgefahren ist
+		if (!insideBounds(player))
+			// wird er sterbens
+			toKill = player;
+		// sonnst falls er auf ein nicht leeres Tile gefahren ist
+		else if (!tileIsEmpty(player)) {
+			// wird er sterben
+			toKill = player;
+			// falls das tile ein head tile war
+			if (getTileAt(player).isHead) {
+				Player otherPlayer = getTileAt(player).getPlayer();
+				// und falls der besitzer dieses Heads vor ihm gefahren ist, stirbt  ein random spieler von den beiden.
+				if(players.indexOf(otherPlayer)<players.indexOf(player) && rnd.nextBoolean())
+					toKill = otherPlayer;
+			}
+		}
+		return toKill;
+	}
+	
 	// diese methoden schauen nach, ob ein tile leer (null) ist
 	private boolean tileIsEmpty(Player player) {
 		return tileIsEmpty(player.getPos());
@@ -222,6 +229,8 @@ public class Playarea {
 
 	// diese Methode spawned einen Spieler
 	private void spawn(Player p) {
+		if(p.isAlive)
+			killPlayer(p);
 		while (true) {
 			int x = rnd.nextInt(width - 10) + 5;
 			int y = rnd.nextInt(height - 10) + 5;
@@ -279,9 +288,14 @@ public class Playarea {
 
 		// erstellt die Spieler instanz
 		Player p = new Player(color, out);
+		int lastLength = players.getLength();
 		players.add(p);
+		
+		if(lastLength>=2) {
+			spawn(p);
+		} else		
 		// falls 2 spieler im spiel sind starte es
-		if(players.getLength()==2) {
+		if(lastLength <=2 && players.getLength()>=2) {
 			Iterator<Player> iterator = players.iterator();
 			while (iterator.hasNext()) {
 				Player player = iterator.next();
@@ -347,30 +361,43 @@ public class Playarea {
 		timer = new Timer();
 		timerTask = new TimerTask() {
 			private int dotCount = 0;
+			private int dotFrameCounter=0;
 			@Override
 			public void run() {
 				if (getPlayerCount() <= 1) {
-					String dots = "";
-					for (int i = 0; i < dotCount; i++)
-						dots += ".";
-
-					// Clearing out the 3x # after Waiting for Players before pasting dots
-					sendToAllPlayers("\r#Waiting for Players   ".getBytes());
-
-					if (dotCount++ > 3) {
-						dotCount = 0;
-						sendToAllPlayers("\r#Waiting for Players   ".getBytes());
-					} else {
-						sendToAllPlayers("\r#Waiting for Players".getBytes());
-						sendToAllPlayers(dots.getBytes());
+					if(dotFrameCounter++==1) {
+						displayWaitMessage(dotCount);
+						if (++dotCount > 3) {
+							dotCount = 1;
+						}	
+					} else if (dotFrameCounter==5) {
+						dotFrameCounter=1;
 					}
-
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+//					String dots = "";
+//					for (int i = 0; i < dotCount; i++)
+//						dots += ".";
+//
+//					// Clearing out the 3x # after Waiting for Players before pasting dots
+//					sendToAllPlayers("\r#Waiting for Players   ".getBytes());
+//
+//					if (dotCount++ > 3) {
+//						dotCount = 0;
+//						sendToAllPlayers("\r#Waiting for Players   ".getBytes());
+//					} else {
+//						sendToAllPlayers("\r#Waiting for Players".getBytes());
+//						sendToAllPlayers(dots.getBytes());
+//					}
+//
+//					try {
+//						Thread.sleep(500);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
+//					return;
 					return;
+				} else {
+					dotFrameCounter=1;
+					dotCount=1;
 				}
 				update();
 				byte[] arr = getPlayareaAsByteArray();
@@ -379,6 +406,19 @@ public class Playarea {
 			}
 		};
 		timer.schedule(timerTask, 0, 200);
+	}
+	
+	private void displayWaitMessage(int dotCount) {
+		StringBuilder sb = new StringBuilder("\r#Waiting for Players");
+		
+		for (int i = 0; i < 3; i++) {
+			if(i<dotCount)
+				sb.append('.');			
+			else
+				sb.append(' ');
+		}
+		sendToAllPlayers(sb.toString().getBytes());
+		return;
 	}
 
 	// sendet eine msg an alle spieler
