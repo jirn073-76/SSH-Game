@@ -14,12 +14,15 @@ public class Tile {
 		switch(direction) {
 			case up:
 			case down:
-				return "\u001B["+(40+player.getColor().ordinal())+"m|";
+				return "\u001B["+(40+player.getColor().ordinal())+"m|"+ColorUtil.getBlackString();
 			case left:
 			case right:
-				return "\u001B["+(40+player.getColor().ordinal())+"m-";
+				return "\u001B["+(40+player.getColor().ordinal())+"m-"+ColorUtil.getBlackString();
 			default:
-				return "\u001B["+(40+player.getColor().ordinal())+"m+";
+				return "\u001B["+(40+player.getColor().ordinal())+"m+"+ColorUtil.getBlackString();
 		}
+	}
+	public Player getPlayer() {
+		return player;
 	}
 }

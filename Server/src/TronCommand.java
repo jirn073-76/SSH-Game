@@ -39,7 +39,7 @@ public class TronCommand implements Command {
 //		}
 		
 		player = null;
-		System.out.println("Command start: " + arg0);
+		//System.out.println("Command start: " + arg0);
 		t = new Thread(new Runnable() {
 			@Override
 			public void run() {	
@@ -87,6 +87,9 @@ public class TronCommand implements Command {
 						}
 						out.write(menu.getMenuAsByteArray());
 						out.flush();
+						try {
+							Thread.sleep(250);
+						} catch (Exception e) { }
 						by = in.read();
 					}
 					var ms = menu.getColorAndGamemode();
@@ -101,20 +104,11 @@ public class TronCommand implements Command {
 					try {
 						
 						if(in.available()>0)
-						{
-//							byte[] b = in.readNBytes(in.available());
-//							out.write(b);
-//							for (byte c : b) {
-//								System.out.print(String.valueOf(c)+" ");
-//							}
-//							System.out.println();
-//							out.flush();
-//							continue;
-							
+						{						
 							int  b =in.read();
 							if(b!=27) {
 								switch(b) {
-									case 3:exc.onExit(0);break;
+									case 3:exc.onExit(0);return;
 									case 'w':player.changeDirection(Direction.up);break;
 									case 'a':player.changeDirection(Direction.left);break;
 									case 's':player.changeDirection(Direction.down);break;
@@ -136,11 +130,8 @@ public class TronCommand implements Command {
 						}
 						out.flush();
 					} catch (IOException e) {
-							try {
-								destroy();
-							} catch (Exception e1) {
-							}
-							return;
+						exc.onExit(0);
+						return;
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -148,14 +139,12 @@ public class TronCommand implements Command {
 			}
 		});
 		t.start();
-		System.out.println();
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
 	public void destroy() throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("Command destroy");
 		player.disconnect();
 		if(t.isAlive())
 			t.stop();
@@ -163,7 +152,6 @@ public class TronCommand implements Command {
 	
 	@Override
 	public void setOutputStream(OutputStream arg0) {
-		System.out.println("Command setOutputstream");
 		out = arg0;
 	}
 	

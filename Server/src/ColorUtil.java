@@ -1,3 +1,4 @@
+import java.util.Dictionary;
 
 public class ColorUtil {
 		public static String getColoredString(EColor color) {
