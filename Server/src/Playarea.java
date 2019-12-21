@@ -276,7 +276,7 @@ public class Playarea {
 			@Override
 			public void run() {
 				if(getPlayerCount()<=1) {
-					sendToAllPlayers("\rWaiting for Players".getBytes());
+					sendToAllPlayers("\r##Waiting for Players".getBytes());
 					return;
 				}
 				update();

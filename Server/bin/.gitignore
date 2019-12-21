@@ -1,9 +1,12 @@
-/Color.class
+/ColorUtil.class
 /Coordinate.class
 /Direction.class
+/EColor.class
 /FieldManager.class
 /IDestroy.class
 /IPlayer.class
+/Menu$menuState.class
+/Menu.class
 /MovementDirection.class
 /Playarea$1.class
 /Playarea$2.class
@@ -19,6 +22,4 @@
 /TronPasswordAuthenticator.class
 /TronShellFactory.class
 /main.class
-/Menu.class
-/EColor.class
-/ColorUtil.class
+/TronCommand$1$1.class

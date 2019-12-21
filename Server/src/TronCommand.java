@@ -21,18 +21,6 @@ public class TronCommand implements Command {
 	
 	@Override
 	public void start(Environment arg0) throws IOException {
-		
-		EColor col = null;
-		for (EColor c : EColor.values()) {
-			if(c.toString().equals(arg0.getEnv().values().toArray()[2]))
-				col = c;
-		}
-		System.out.println(col);
-		if(col == null) {
-			exc.notifyAll();
-			return;
-		}
-		
 //		Menu menu = new Menu(FieldManager.getInstance().PLAYAREA_HEIGHT, FieldManager.getInstance().PLAYAREA_WIDTH);
 //		out.write(menu.getMenuAsByteArray());
 //		out.flush();
@@ -49,15 +37,76 @@ public class TronCommand implements Command {
 //		{
 //			
 //		}
-		player = fm.createPlayer(out,col);
-		// TODO Auto-generated method stub
+		
+		player = null;
 		System.out.println("Command start: " + arg0);
 		t = new Thread(new Runnable() {
 			@Override
 			public void run() {	
+				try {
+				
+					// Menu I/O Starts here
+					Menu menu = new Menu(FieldManager.PLAYAREA_HEIGHT,FieldManager.PLAYAREA_WIDTH);
+					
+					Thread menuOutputThread = new Thread(new Runnable() {
+
+						@Override
+						public void run() {
+							boolean isThreadTerminated = false;
+							try {
+								while(!isThreadTerminated) {
+									Thread.sleep(20);
+									for(int i = 0; i < 100; i++) {
+										out.write('\n');
+										out.write('\r');
+									}
+									out.write(menu.getMenuAsByteArray());
+									out.flush();
+								}
+							} catch (IOException | InterruptedException e) {
+								isThreadTerminated = true;
+							}
+						}
+					});
+					
+					menuOutputThread.start();
+					
+					int  by = in.read();
+					while(!(menu.isCursorOnPlay() && by == 13)) {
+						if(by!=27) {
+							switch(by) {
+								case 3:exc.onExit(0);break;
+								case 'w':menu.moveCursor(Direction.up);break;
+								case 'a':menu.moveCursor(Direction.left);break;
+								case 's':menu.moveCursor(Direction.down);break;
+								case 'd':menu.moveCursor(Direction.right);break;
+							}
+						}else {
+							by = in.read();
+							if(by==91){
+								by=in.read();
+								switch(by) {
+								case 65:menu.moveCursor(Direction.up);break;
+								case 66:menu.moveCursor(Direction.down);break;
+								case 67:menu.moveCursor(Direction.right);break;
+								case 68:menu.moveCursor(Direction.left);break;
+							}
+							}
+						}
+						
+						by = in.read();
+					}
+					menuOutputThread.interrupt();
+					var ms = menu.getColorAndGamemode();
+					player = FieldManager.createPlayer(out, ms.color);
+				}
+				
+				// Menu I/O ends here
+				
+				
+				catch(IOException ex) {}
 				while (true) {
 					try {
-
 						
 						if(in.available()>0)
 						{
