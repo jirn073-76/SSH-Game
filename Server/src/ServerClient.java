@@ -62,9 +62,6 @@ public class ServerClient extends StandardEnvironment{
 		hkprovider.setPath(hkfile);
 		
 		sshd.setKeyPairProvider(hkprovider);
-		//Windows
-		//sshd.setShellFactory(new ProcessShellFactory("powershell.exe"));
-		//"bash -l". config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 		sshd.setShellFactory( new TronShellFactory(sshd));
 	}	 
 }
