@@ -33,17 +33,22 @@ public class TronCommand implements Command {
 			return;
 		}
 		
-		/*Menu menu = new Menu(FieldManager.getInstance().PLAYAREA_HEIGHT, FieldManager.getInstance().PLAYAREA_WIDTH);
-		out.write(menu.getMenuAsByteArray());
-		out.flush();
-		menu.moveCursor(Direction.down);
-		out.write(menu.getMenuAsByteArray());
-		out.flush();
-		boolean alwaysTrue = true;
-		while(alwaysTrue) 
-		{
-			
-		}*/
+//		Menu menu = new Menu(FieldManager.getInstance().PLAYAREA_HEIGHT, FieldManager.getInstance().PLAYAREA_WIDTH);
+//		out.write(menu.getMenuAsByteArray());
+//		out.flush();
+//		menu.moveCursor(Direction.up);
+//		menu.moveCursor(Direction.left);
+//		menu.moveCursor(Direction.left);
+//		out.write(menu.getMenuAsByteArray());
+//		out.flush();
+//		
+//		Menu.menuState menuState = menu.getColorAndGamemode();
+//		System.out.println(menuState.gameMode + " " + menuState.color);
+//		boolean alwaysTrue = true;
+//		while(alwaysTrue) 
+//		{
+//			
+//		}
 		player = fm.createPlayer(out,col);
 		// TODO Auto-generated method stub
 		System.out.println("Command start: " + arg0);

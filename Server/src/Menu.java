@@ -1,9 +1,9 @@
 
 public class Menu {
-		public String gameMode = "Classic";
+		private String gameMode = "Classic";
 		
 		private EColor[] colors = {EColor.red, EColor.green, EColor.orange, EColor.blue, EColor.pink, EColor.lightblue, EColor.white, EColor.black};
-		public int colorIndex = Integer.MAX_VALUE/2+1;
+		private int colorIndex = Integer.MAX_VALUE/2+1;
 		private int width, height;
 		private int cursorHeightPosition = 0;
 		
