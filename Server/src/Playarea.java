@@ -273,10 +273,31 @@ public class Playarea {
 			return;
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
+			private int dotCount = 0;
 			@Override
 			public void run() {
 				if(getPlayerCount()<=1) {
-					sendToAllPlayers("\r##Waiting for Players".getBytes());
+					String dots = "";
+					for(int i = 0; i < dotCount; i++)
+						dots += ".";
+					
+					// Clearing out the 3x # after Waiting for Players before pasting dots 
+					sendToAllPlayers("\r#Waiting for Players   ".getBytes());					
+
+					if(dotCount++ > 3) {
+						dotCount = 0;
+						sendToAllPlayers("\r#Waiting for Players   ".getBytes());					
+					}
+					else {
+						sendToAllPlayers("\r#Waiting for Players".getBytes());					
+						sendToAllPlayers(dots.getBytes());
+					}
+						
+					try {
+						Thread.sleep(300);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 					return;
 				}
 				update();
@@ -284,7 +305,7 @@ public class Playarea {
 
 				sendToAllPlayers(arr);
 			}
-		}, 0,250);
+		}, 0,200);
 	}
 	
 	private void sendToAllPlayers(byte[] msg) {

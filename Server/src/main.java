@@ -38,6 +38,9 @@ public class main {
 		ServerClient sc = new ServerClient(8052);
 		try {
 			sc.getSshd().open();
+		}  catch(java.net.BindException be) {
+			System.out.println("Port already in use! Please choose another port or close any running instances!");
+			return;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
