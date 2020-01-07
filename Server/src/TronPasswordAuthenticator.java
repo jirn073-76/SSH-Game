@@ -1,27 +1,20 @@
-import java.util.ArrayList;
+import java.io.IOException;
 
-import org.apache.sshd.server.auth.AsyncAuthException;
 import org.apache.sshd.server.auth.password.PasswordAuthenticator;
-import org.apache.sshd.server.auth.password.PasswordChangeRequiredException;
 import org.apache.sshd.server.session.ServerSession;
 
 public class TronPasswordAuthenticator implements PasswordAuthenticator {
 	
-	private ArrayList<String> allowedUsers = new ArrayList<String>();
-	
-	
-	public TronPasswordAuthenticator() {
-		super();
-		for (String uname : new String[] { "red", "green", "orange", "blue", "pink", "lightblue", "white"}) {
-			allowedUsers.add(uname);
-		}
-	}
-	
 	@Override
 	public boolean authenticate(String uname, String pw, ServerSession arg2) {
-		if (allowedUsers.contains(uname)) 
+		if (uname.toUpperCase().equals("22TRON") || uname.toUpperCase().equals("TRON")) 
 			return true;
-			
+		else
+			try {
+				arg2.disconnect(404, "Username not found\n\rPlease consider logging in with the username 'tron' if you're interested in playing 22-Tron :)");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		return false;
 	}
 }

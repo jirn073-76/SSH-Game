@@ -91,14 +91,17 @@ public class Playarea {
 		for(int y = 0; y < width+2; y++) {
 			sb.append("#");
 		}
-		
+		sb.append("\n\r");
 		return sb.toString().getBytes();
 	}
 	
 	private void update() {
 		int i = 0;
 		int j;
-		for(Player p:players) {
+		for(int k = 0; k<getPlayerCount();k++) {
+			Player p = players.get(k);
+			if(!p.isAlive)
+				continue;
 			getTileAt(p.getPos()).isHead = false;
 			getTileAt(p.getPos()).direction=p.movementDirection;
 			p.move();
@@ -125,7 +128,8 @@ public class Playarea {
 			} 
 			if(toKill!=null)
 				killPlayer(toKill);
-			playField[p.getPos().x][p.getPos().y] = new Tile(p.movementDirection,false,p);
+			else
+				playField[p.getPos().x][p.getPos().y] = new Tile(p.movementDirection,false,p);
 			i++;
 		}
 	}
@@ -135,9 +139,30 @@ public class Playarea {
 	}
 
 	private void killPlayer(Player p) {
+		removeFromField(p);
+
+		
+		if(aliveCount()>1)
+			return;
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) { }
+		
+		for (Player player : players) {
+			if(player.isAlive)
+				removeFromField(player);
+			spawn(player);
+		}
+	}
+	private void removeFromField(Player p) {
+		p.isAlive=false;
+		resetTile(p.getPos());
 		for (Coordinate pos : p.trail) {
 			resetTile(pos);
 		}
+	}
+	private void spawn(Player p) {
 		while(true) 
 		{
 			int x = rnd.nextInt(width-10)+5;
@@ -182,70 +207,29 @@ public class Playarea {
 					if(!empty)
 						continue;
 					
-					p.startMovementDirection=direction;
-					p.reset(new Coordinate(x,y));
+					p.setPosition(x, y, direction);
+					playField[x][y] = new Tile(p.movementDirection,true,p);
+					p.isAlive = true;
 					return;
 				}
 			}
 		}
 	}
 	
-	public IPlayer newPlayer(OutputStream out, Color color) {
-		while(true) 
-		{
-			int x = rnd.nextInt(width-10)+5;
-			int y = rnd.nextInt(height-10)+5;
-			if(playField[x][y] == null) {
-				for (Direction direction : Direction.values()) {
-					boolean empty = true;
-					switch (direction) {
-					case up:
-							for (int i = 1; i < 6; i++) {
-								if(playField[x][y+i]!=null) {
-									empty = false;
-									break;
-								}
-							}
-						break;
-					case left:
-						for (int i = 1; i < 6; i++) {
-							if(playField[x-i][y]!=null) {
-								empty = false;
-								break;
-							}
-						}
-						break;
-					case down:
-						for (int i = 1; i < 6; i++) {
-							if(playField[x][y-i]!=null) {
-								empty = false;
-								break;
-							}
-						}
-						break;
-					case right:
-							for (int i = 1; i < 6; i++) {
-								if(playField[x+i][y]!=null) {
-									empty = false;
-									break;
-								}
-							}
-							break;
+	public IPlayer newPlayer(OutputStream out, EColor color) {
+
+		Player p = new Player(color, out);
+		players.add(p);	
+		spawn(p);
+		return p.getFunctions(new IDestroy() {
+			@Override
+			public void destroy() {
+				players.remove(p);
+				removeFromField(p);
+				if(getPlayerCount()<2) {
+					for (Player player : players) {
+							killPlayer(player);
 					}
-					if(!empty)
-						continue;
-					
-					Player p = new Player(x,y,direction,color, out);
-					players.add(p);	
-					playField[x][y] = new Tile(p.movementDirection, false, p); 
-					return p.getFunctions(new IDestroy() {
-						@Override
-						public void destroy() {
-							players.remove(p);
-							for (Coordinate pos : p.trail) {
-								resetTile(pos);
-							}
-							resetTile(p.getPos());
 //							if(getPlayerCount()<=0) {
 //								timer.cancel();
 //								try {
@@ -254,18 +238,17 @@ public class Playarea {
 //									e.printStackTrace();
 //								}
 //							}
-						}
-					});
 				}
 			}
-		}
+		});
 	}
 		
 	private Tile getTileAt(Coordinate pos) {
 		return playField[pos.x][pos.y];
 	}
 	private void resetTile(Coordinate pos) {
-		resetTile(pos.x,pos.y);
+		if(insideBounds(pos))
+			resetTile(pos.x,pos.y);
 	}
 	private void resetTile(int x, int y) {
 		playField[x][y] = null;
@@ -274,27 +257,64 @@ public class Playarea {
 	public int getPlayerCount() {
 		return players.size();
 	}
+	
+	private int aliveCount() {
+		int counter = 0;
+		for(Player p : players)
+		{
+			if(p.isAlive)
+				counter++;
+		}
+		return counter;
+	}
+	
 	public void start() {
 		if(timer != null)
 			return;
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
+			private int dotCount = 0;
 			@Override
 			public void run() {
-				if(getPlayerCount()==0)
+				if(getPlayerCount()<=1) {
+					String dots = "";
+					for(int i = 0; i < dotCount; i++)
+						dots += ".";
+					
+					// Clearing out the 3x # after Waiting for Players before pasting dots 
+					sendToAllPlayers("\r#Waiting for Players   ".getBytes());					
+
+					if(dotCount++ > 3) {
+						dotCount = 0;
+						sendToAllPlayers("\r#Waiting for Players   ".getBytes());					
+					}
+					else {
+						sendToAllPlayers("\r#Waiting for Players".getBytes());					
+						sendToAllPlayers(dots.getBytes());
+					}
+						
+					try {
+						Thread.sleep(300);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 					return;
+				}
 				update();
 				byte[] arr = getPlayareaAsByteArray();
-				for(Player p: players) {
-					OutputStream out = p.getOutStream();
-					try {
-						out.write(arr);
-						out.flush();
-					} catch(IOException e) {
-						
-					}
-				}
+
+				sendToAllPlayers(arr);
 			}
-		}, 0,250);
+		}, 0,200);
+	}
+	
+	private void sendToAllPlayers(byte[] msg) {
+		for(Player p: players) {
+			OutputStream out = p.getOutStream();
+			try {
+				out.write(msg);
+				out.flush();
+			} catch(IOException e) { }
+		}
 	}
 }
