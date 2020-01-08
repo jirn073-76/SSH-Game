@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
@@ -23,6 +24,7 @@ public class menuType2 extends JFrame implements ActionListener {
 		JButton button4=new JButton("Achievements");
 		JButton button5=new JButton("Version");
 		JButton button6=new JButton("Developers");
+		
 		
 		JMenuBar mb=new JMenuBar();
 		
@@ -61,13 +63,45 @@ public class menuType2 extends JFrame implements ActionListener {
 			p.add(submit);
 			p.add(l2);
 			
-			
 			p2.add(button1);
 			p2.add(button2);
 			p2.add(button3);
 			p2.add(button4);
 			p2.add(button5);
 			p2.add(button6);
+			
+			submit.setBackground(Color.BLUE);
+			submit.setForeground(Color.WHITE);
+			
+			button1.setBackground(Color.GREEN);
+			button2.setBackground(Color.YELLOW);
+			button3.setBackground(Color.YELLOW);
+			button4.setBackground(Color.YELLOW);
+			button5.setBackground(Color.YELLOW);
+			button6.setBackground(Color.YELLOW);
+
+			
+			
+			HandlerClass handler1=new HandlerClass();
+			handler1.kennzahl=1;
+			HandlerClass handler2=new HandlerClass();
+			handler2.kennzahl=2;
+			HandlerClass handler3=new HandlerClass();
+			handler3.kennzahl=3;
+			HandlerClass handler4=new HandlerClass();
+			handler4.kennzahl=4;
+			HandlerClass handler5=new HandlerClass();
+			handler5.kennzahl=5;
+			HandlerClass handler6=new HandlerClass();
+			handler6.kennzahl=6;
+			
+			
+			button1.addActionListener(handler1);
+			button2.addActionListener(handler2);
+			button3.addActionListener(handler3);
+			button4.addActionListener(handler4);
+			button5.addActionListener(handler5);
+			button6.addActionListener(handler6);
 			
 			setUndecorated(true);
 			setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -107,6 +141,27 @@ public class menuType2 extends JFrame implements ActionListener {
 				String input =txt.getText();
 				l2.setText("Hello "+input+ "! Please select your option!");
 			}
+			if(action.equals("Version")) {
+				System.out.println("Der eingegebene Text ist "+txt.getText());
+				String input =txt.getText();
+				l2.setText("Version: 1.0.0");
+			}
 		}
 	
+		private class HandlerClass implements ActionListener{
+			
+			public int kennzahl=0;
+			
+			public void actionPerformed( ActionEvent event) {
+				
+				if (kennzahl==5) {
+					JOptionPane.showMessageDialog(null, String.format("1.0.0", event.getActionCommand()));
+				}
+				if (kennzahl==6) {
+					JOptionPane.showMessageDialog(null, String.format("Bayer Hugo,  Ramadani Dionis, Islamovic Armin, Doronenko Bronislav", event.getActionCommand()));
+				}
+				
+				
+			}
+		}
 }
