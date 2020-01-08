@@ -10,16 +10,16 @@ public class Tile {
 		this.player = player;
 	}
 	
-	char getChar(){
+	public String getString(){
 		switch(direction) {
 			case up:
 			case down:
-				return '|';
+				return "\u001B["+(40+player.getColor().ordinal())+"m|";
 			case left:
 			case right:
-				return '-';
+				return "\u001B["+(40+player.getColor().ordinal())+"m-";
 			default:
-				return '+';
+				return "\u001B["+(40+player.getColor().ordinal())+"m+";
 		}
 	}
 }

@@ -1,3 +1,11 @@
+import java.io.IOException;
+
+import org.apache.sshd.common.session.helpers.AbstractSession;
+import org.apache.sshd.server.SshServer;
+//import org.slf4j.
+//import IoServiceFactoryFactory
+import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
+import org.apache.sshd.server.shell.ProcessShellFactory;
 
 public class main {
 	public static void main(String[] args) 
@@ -25,6 +33,28 @@ public class main {
 //				sb.append('\n');
 //			}
 //			System.out.println(sb.toString());
-//		}		
+//		}	
+	
+		ServerClient sc = new ServerClient(8052);
+		try {
+			sc.getSshd().open();
+		}  catch(java.net.BindException be) {
+			System.out.println("Port already in use! Please choose another port or close any running instances!");
+			return;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
+		System.out.println(sc.getSshd().getActiveSessions());
+		System.out.println(sc.getSshd().getHost()+":"+sc.getSshd().getPort());
+		while (true) {
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+		}
 	}
 }
