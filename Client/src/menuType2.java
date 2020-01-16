@@ -5,6 +5,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.swing.*;
 
@@ -16,14 +18,15 @@ public class menuType2 extends JFrame implements ActionListener {
 		JLabel l2=new JLabel();
 		
 		JTextField txt= new JTextField(30);
-		JButton button1=new JButton("Singleplayer");
+		JButton button1=new JButton("Multiplayer");
 		JButton submit=new JButton("submit");
 		
-		JButton button2=new JButton("Multiplayer");
-		JButton button3=new JButton("Settings");
-		JButton button4=new JButton("Achievements");
+		//JButton button2=new JButton("");
+		//JButton button3=new JButton("Settings");
+		
 		JButton button5=new JButton("Version");
 		JButton button6=new JButton("Developers");
+		JButton button13=new JButton("Exit");
 		
 		
 		JMenuBar mb=new JMenuBar();
@@ -40,13 +43,13 @@ public class menuType2 extends JFrame implements ActionListener {
 			
 			JLabel background;
 			f.setTitle("22-TRON");
-			f.setSize(900,400);
+			f.setSize(600,400);
 			f.setLayout(new FlowLayout());
 			f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			ImageIcon img=new ImageIcon(".//BILD.jpg");
 			
 			background=new JLabel("", img,JLabel.CENTER);
-			background.setBounds(0,0,900,400);
+			background.setBounds(0,0,500,300);
 			background.setIcon(img);
 			add(background);
 			f.setLocationRelativeTo(null);
@@ -64,19 +67,19 @@ public class menuType2 extends JFrame implements ActionListener {
 			p.add(l2);
 			
 			p2.add(button1);
-			p2.add(button2);
-			p2.add(button3);
-			p2.add(button4);
+			//p2.add(button2);
+			//p2.add(button3);
+			
 			p2.add(button5);
 			p2.add(button6);
-			
+			p2.add(button13);
 			submit.setBackground(Color.BLUE);
 			submit.setForeground(Color.WHITE);
-			
+			button13.setForeground(Color.WHITE);
 			button1.setBackground(Color.GREEN);
-			button2.setBackground(Color.YELLOW);
-			button3.setBackground(Color.YELLOW);
-			button4.setBackground(Color.YELLOW);
+			//button2.setBackground(Color.YELLOW);
+			//button3.setBackground(Color.YELLOW);
+			button13.setBackground(Color.RED);
 			button5.setBackground(Color.YELLOW);
 			button6.setBackground(Color.YELLOW);
 
@@ -88,8 +91,8 @@ public class menuType2 extends JFrame implements ActionListener {
 			handler2.kennzahl=2;
 			HandlerClass handler3=new HandlerClass();
 			handler3.kennzahl=3;
-			HandlerClass handler4=new HandlerClass();
-			handler4.kennzahl=4;
+			HandlerClass handler13=new HandlerClass();
+			handler13.kennzahl=13;
 			HandlerClass handler5=new HandlerClass();
 			handler5.kennzahl=5;
 			HandlerClass handler6=new HandlerClass();
@@ -97,9 +100,9 @@ public class menuType2 extends JFrame implements ActionListener {
 			
 			
 			button1.addActionListener(handler1);
-			button2.addActionListener(handler2);
-			button3.addActionListener(handler3);
-			button4.addActionListener(handler4);
+			//button2.addActionListener(handler2);
+			//button3.addActionListener(handler3);
+			button13.addActionListener(handler13);
 			button5.addActionListener(handler5);
 			button6.addActionListener(handler6);
 			
@@ -153,12 +156,31 @@ public class menuType2 extends JFrame implements ActionListener {
 			public int kennzahl=0;
 			
 			public void actionPerformed( ActionEvent event) {
-				
+				if(kennzahl==1) {
+					try {
+						String[] str= { "cmd",  "/c", "start", "powershell.exe", "-NoExit", "-Command", "[console]::WindowWidth=95; [console]::WindowHeight=35; [console]::BufferWidth=[console]::WindowWidth; [console]::BufferHeight=35; ssh tron@clown.institute -p8052", "\r\n"};
+						Process process = Runtime.getRuntime().exec(str);
+						System.exit(EXIT_ON_CLOSE);
+						//InputStream input = process.getInputStream();
+						//OutputStream output = process.getOutputStream();
+
+						//OutputStream output2 = process.getOutputStream();
+						//output2.write("\n".getBytes());
+						//output.write("yes".getBytes());
+						
+						
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 				if (kennzahl==5) {
-					JOptionPane.showMessageDialog(null, String.format("1.0.0", event.getActionCommand()));
+					JOptionPane.showMessageDialog(null, String.format("Version 1.0.0", event.getActionCommand()));
 				}
 				if (kennzahl==6) {
 					JOptionPane.showMessageDialog(null, String.format("Bayer Hugo,  Ramadani Dionis, Islamovic Armin, Doronenko Bronislav", event.getActionCommand()));
+				}
+				if (kennzahl==13) {
+					System.exit(EXIT_ON_CLOSE);
 				}
 				
 				
